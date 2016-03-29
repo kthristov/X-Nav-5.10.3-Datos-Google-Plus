@@ -31,7 +31,7 @@
       // The provided key works for this sample only when run from
       // https://google-api-javascript-client.googlecode.com/hg/samples/authSample.html
       // To use in your own application, replace this API key with your own.
-      var apiKey = '';
+      var apiKey = 'AIzaSyA_cdGsOl0l_mciZRao_oQhE7lNtGX-4Cs';
 
       // Use a button to handle authentication the first time.
       function handleClientLoad() {
@@ -42,19 +42,44 @@
       // Load the API and make an API call.  Display the results on the screen.
       function makeApiCall() {
         gapi.client.load('plus', 'v1', function() {
-          var request = gapi.client.plus.people.get({
-            'userId': ''
+          var request = gapi.client.plus.activities.list({
+            'userId': '108086881826934773478' ,
+            'collection' : 'public' 
             // For instance: 
             // 'userId': '+GregorioRobles'
           });
           request.execute(function(resp) {
+            activities = resp.items
+            var list = document.createElement('ul');
+
+            for (var i = 0 ; i < activities.length ; i++) {
+              var nodo = document.createElement('li');
+              nodo.appendChild(document.createTextNode(activities[i].title))
+
+              if (activities[i].location) {
+                var sublist = document.createElement('ul');
+                var longitude = document.createElement('li');
+                longitude.appendChild(document.createTextNode(activities[i].location.position.longitude))
+                sublist.appendChild(longitude)
+                var latitude = document.createElement('li');
+                latitude.appendChild(document.createTextNode(activities[i].location.position.latitude))
+                sublist.appendChild(latitude)
+
+                nodo.appendChild(sublist)
+              }
+
+              list.appendChild(nodo)
+            }
+
+            /*
             var heading = document.createElement('h4');
             var image = document.createElement('img');
             image.src = resp.image.url;
             heading.appendChild(image);
             heading.appendChild(document.createTextNode(resp.displayName));
-
-            document.getElementById('content').appendChild(heading);
+            */
+            document.getElementById('content').appendChild(list);
+            
           });
         });
       }
